@@ -1,0 +1,49 @@
+name: Feature Request
+about: Suggest a new feature or improvement for Competitor Researcher
+title: "[FEATURE] "
+labels: enhancement
+assignees: ''
+
+---
+
+year: 2026
+
+---
+
+## 💡 Feature Request
+
+### Is Your Feature Request Related to a Problem?
+
+Please describe. A clear description of what the problem is. Ex. I'm always frustrated when [...]
+
+### Describe the Solution You'd Like
+
+A clear description of what you want to happen.
+
+### Describe Alternatives You've Considered
+
+A clear description of any alternative solutions or features you've considered.
+
+### Additional Context
+
+- Use case: [Describe how this feature would be used]
+- Examples: [Provide examples if applicable]
+- Dependencies: [Any new dependencies required]
+- Breaking changes: [Would this be a breaking change?]
+- API changes: [Does this require API changes?]
+
+### Priority
+
+- [ ] High: Essential for production use
+- [ ] Medium: Nice to have
+- [ ] Low: Cosmetic or minor improvement
+
+### Willing to Contribute
+
+- [ ] Yes, I'm willing to implement this feature
+- [ ] No, but I'd like to help test
+- [ ] No, just suggesting
+
+---
+
+**Note**: Feature requests will be reviewed and prioritized based on community interest and feasibility.

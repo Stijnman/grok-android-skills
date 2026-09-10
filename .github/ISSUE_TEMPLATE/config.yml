@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: GitHub Discussion
+    url: https://github.com/Stijnman/competitor_researcher/discussions
+    about: Please ask and answer questions here
+  - name: Security Issue
+    url: https://github.com/Stijnman
+    about: Report security vulnerabilities privately via GitHub profile
