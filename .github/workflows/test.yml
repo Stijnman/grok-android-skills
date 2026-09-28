@@ -1,135 +1,63 @@
-name: Test Competitor Researcher
+name: Repository CI
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 permissions:
   contents: read
-  pull-requests: read
 
 jobs:
   validate:
-    name: Validate
+    name: Validate repository
     runs-on: ubuntu-latest
-    
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          
-      - name: Install dependencies
-        run: npm ci
-        
-      - name: TypeScript type check
-        run: npx tsc --noEmit
-        
-      - name: Lint check
-        run: npm run lint || echo "Linting completed"
-
-  test:
-    name: Run Tests
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          
-      - name: Install dependencies
-        run: npm ci
-        
-      - name: Run tests
-        run: npm test || echo "Tests completed"
-
-  lint:
-    name: Lint Documentation
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        
-      - name: Install markdownlint
-        run: |
-          npm install -g markdownlint-cli2
-          
-      - name: Lint all markdown files
-        run: |
-          find . -name "*.md" -type f -not -path "./.git/*" -exec markdownlint-cli2 --config .markdownlint.json {} \;
-
-  spellcheck:
-    name: Spell Check
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        
-      - name: Install codespell
-        run: |
-          pip install codespell
-          
-      - name: Check spelling
-        run: |
-          codespell --skip ".git,*.json,*.yml,*.yaml,CHANGELOG.md,node_modules" \
-            --ignore-words-list "competitor,researcher,gemini,typescript,react,express,api,AI,http,https" \
-            --check-filenames \
-            --check-hidden
-
-  security-check:
-    name: Security Scan
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        
-      - name: Check for hardcoded secrets
-        uses: trufflesecurity/trufflehog@main
-        with:
-          path: ./
-          base: ${{ github.event.repository.default_branch }}
-          head: HEAD
-          extra_args: --debug --only-verified --fail
-
-  pre-commit:
-    name: Pre-commit Hooks
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-          
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          
-      - name: Install pre-commit
+      - name: Compile Python sources
         run: |
-          pip install pre-commit
-          npm install -g markdownlint-cli2
-          
-      - name: Install pre-commit hooks
+          if find . -type f -name '*.py' -not -path './.git/*' | grep -q .; then
+            python - <<'PY'
+          import pathlib, py_compile
+          files = [p for p in pathlib.Path('.').rglob('*.py') if '.git' not in p.parts]
+          for path in files:
+              py_compile.compile(str(path), doraise=True)
+          print(f"compiled {len(files)} Python files")
+          PY
+          else
+            echo "No Python sources; documentation-only validation applies."
+          fi
+      - name: Validate skill metadata
         run: |
-          pre-commit install
-          
-      - name: Run pre-commit on all files
+          test -s README.md
+          test -s SKILL.md
+          grep -qiE 'description|purpose|skills?|usage|requirements' SKILL.md
+      - name: Reject unresolved template placeholders
         run: |
-          pre-commit run --all-files --show-diff-on-failure || echo "Pre-commit checks completed"
+          if grep -R -n -E '\[Brief description to be added\]|\[main purpose to be added\]|\[description\]|\[Feature [0-9]+\]' README.md SKILL.md 2>/dev/null; then
+            echo "Unresolved template placeholders found"
+            exit 1
+          fi
+      - name: Basic secret-pattern check
+        run: |
+          python - <<'PY'
+          import pathlib, re
+          patterns = [
+              re.compile(r'-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----'),
+              re.compile(r'ghp_[A-Za-z0-9]{30,}'),
+              re.compile(r'github_pat_[A-Za-z0-9_]{30,}'),
+          ]
+          bad=[]
+          for p in pathlib.Path('.').rglob('*'):
+              if not p.is_file() or '.git' in p.parts:
+                  continue
+              try: text=p.read_text(errors='ignore')
+              except OSError: continue
+              if any(rx.search(text) for rx in patterns): bad.append(str(p))
+          if bad: raise SystemExit("Potential committed secrets: " + ", ".join(bad))
+          print("No high-confidence secret patterns found")
+          PY

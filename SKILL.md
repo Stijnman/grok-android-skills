@@ -1,85 +1,34 @@
-# grok-android-skills
+# Grok Android Skills
 
-**Description**: Repository for grok-android-skills - [Brief description to be added]
+**Description:** Android-control skills for AI agents that operate real devices and emulators through ADB and MCP tooling.
 
-**Purpose**: Enable AI agents to [main purpose to be added].
+**Purpose:** Use these skills when an agent needs to inspect or control Android UI, apps, files, shell commands, logs, or automated mobile test flows.
 
----
+## Quick start
 
-## 🎯 Quick Start
+1. Enable USB debugging on the Android device or start an emulator.
+2. Ensure ADB is available on the host.
+3. Choose the skill that matches the task.
+4. Configure the corresponding MCP server/client as documented by that skill.
+5. Start with observation/read-only operations before actions that modify device state.
 
-### For AI Agent Developers
+## Included skills
 
-1. Review the documentation below
-2. Configure required settings
-3. Test with sample data
-4. Deploy and monitor
+- **droidmind** — recommended general-purpose MCP + ADB control for UI, apps, files, shell and logs.
+- **android-phone-control** — observe-first Android control loop with explicit safety guidance.
+- **auto-mobile** — mobile UI automation and test-authoring workflow.
 
-### For Users
+## Safety
 
-Tell your AI agent to use this repository for [use case].
+Treat device actions as real user actions. Confirm destructive operations, purchases, account changes, credential entry, factory resets, app-data deletion, and other irreversible changes before execution. Do not embed device credentials or API secrets in repository files.
 
----
+## Requirements
 
-## 📊 Overview
+- Android device or emulator
+- ADB
+- An MCP-compatible client for MCP-based skills
+- Skill-specific dependencies documented in each included skill
 
-This repository contains [description].
+## License
 
-### Core Capabilities
-
-| Category | Description | Status |
-|----------|-------------|--------|
-| [Feature 1] | [Description] | ✅ Production |
-| [Feature 2] | [Description] | ✅ Production |
-
----
-
-## 🔒 Security Overview
-
-⚠️ **IMPORTANT**: Please read [SECURITY.md](./SECURITY.md) before using this repository.
-
-### Key Security Principles
-
-1. Data Privacy
-2. Input Validation
-3. Secure Configuration
-4. Rate Limiting
-5. Audit Trail
-
----
-
-## 📚 Documentation
-
-| Document | Description | Required Reading |
-|----------|-------------|------------------|
-| [SECURITY.md](./SECURITY.md) | Security policy | ✅ Yes |
-| [CONTRIBUTING.md](./CONTRIBUTING.md) | Contribution guide | ⚠️ For contributors |
-| [TESTING.md](./TESTING.md) | Testing guide | ⚠️ For contributors |
-| [README.md](./README.md) | Overview | ✅ Yes |
-| [CHANGELOG.md](./CHANGELOG.md) | Changes | ⚠️ For reference |
-
----
-
-## 📜 License
-
-This repository is licensed under the **MIT License**. See [LICENSE](./LICENSE).
-
----
-
-## 👤 Maintainer
-
-**Stijnman** - [GitHub Profile](https://github.com/Stijnman)
-
----
-
-## 📞 Support
-
-| Issue Type | How to Get Help |
-|-----------|-----------------|
-| Bug Report | Open a [GitHub Issue](https://github.com/Stijnman/grok-android-skills/issues) |
-| Security Issue | Email: security@stijnman.com |
-| General Question | Open a [GitHub Discussion](https://github.com/Stijnman/grok-android-skills/discussions) |
-
----
-
-*Last updated: September 11, 2026*
+MIT. See `LICENSE`.
