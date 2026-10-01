@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Qwen3-VL Android Agent skill: structured-first visual planning with DroidMind/ADB execution and post-action verification
+- Hybrid selector/vision architecture and bounded action vocabulary
+- Failure recovery and no-progress loop protection
 - Comprehensive documentation and CI/CD configuration
 - SKILL.md, STATUS.md, CONTRIBUTORS.md, TESTING.md, CONTRIBUTING.md
 - CODE_OF_CONDUCT.md, SECURITY.md, CHANGELOG.md
